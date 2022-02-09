@@ -31,7 +31,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
         // 1st clone your repository
         // 2nd compile the code
 
-        response.getWriter().println("CI job done");
+        response.getWriter().println("I'm testing");
     }
  
     // used to start the CI server in command line
