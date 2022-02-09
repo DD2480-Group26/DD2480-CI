@@ -29,6 +29,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
                        HttpServletResponse response) 
         throws IOException, ServletException
     {
+    	response.getWriter().println(request.toString());
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
@@ -40,13 +41,14 @@ public class ContinuousIntegrationServer extends AbstractHandler
         // here you do all the continuous integration tasks
         // for example
         // 1st clone your repository
-        File localDirectory = new File("TestGitPull\\");
+        File localDirectory = new File("GitPull\\");
+        String branchName = "";
     	Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git",localDirectory);
-    	GitConnector.gitPull(localDirectory, "test");
-    	GitConnector.checkoutToBranch(localDirectory, "origin/test");
+    	GitConnector.gitPull(localDirectory, branchName);
+    	GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
         // 2nd compile the code
 
-        response.getWriter().println("I'm testing");
+        response.getWriter().println("CI job Done");
         
         //Delete the directory
     	git.getRepository().close();

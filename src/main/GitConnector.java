@@ -10,6 +10,11 @@ import org.eclipse.jgit.merge.MergeStrategy;
 
 public class GitConnector {
 
+	/**
+	 * Recursively delete a folder and all the files contained
+	 * 
+	 * @param Folder name
+	 */
 	public static void deleteDirectory(File file)
     {
         for (File subfile : file.listFiles()) {
@@ -17,11 +22,18 @@ public class GitConnector {
             if (subfile.isDirectory()) {
                 deleteDirectory(subfile);
             }
-  
             subfile.delete();
         }
     }
 	
+	
+	/**
+	 * Clone a remote Git repo in a selected folder 
+	 * 
+	 * @param Https link to Git Repo
+	 * @param Local folder 
+	 * @return Git object
+	 */
 	public static Git cloneRepo(String remotePath, File localPath) {
 		Git git; 
 		try {
@@ -37,6 +49,14 @@ public class GitConnector {
 		 return null;
 	}
 	
+	
+	/**
+	 * Pull a git repo 
+	 * 
+	 * @param Local folder 
+	 * @param Name of the branch to pull 
+	 * @return True if the pull succeeded 
+	 */
 	public static boolean gitPull(File localRepoPath, String branch) {
 		 boolean pullSuccessful;
 		 
@@ -45,7 +65,6 @@ public class GitConnector {
 			 PullCommand pull = git.pull();
 			 pull.setRemote("origin");
 			 pull.setRemoteBranchName(branch); 
-//			 pull.setStrategy(MergeStrategy.RECURSIVE);
 			 pull.setRebase(true);
 			 PullResult result = pull.call();
 			 pullSuccessful = result.isSuccessful();
@@ -56,6 +75,13 @@ public class GitConnector {
 		 return pullSuccessful;
 	}
 	
+	/**
+	 * Checkout from main to the selected branch 
+	 * 
+	 * @param Local folder 
+	 * @param Name of the branch to pull 
+	 * @return True if the checkout succeeded 
+	 */
 	public static boolean checkoutToBranch(File repositoryLocalPath, String branchName) {
 
 		  boolean actionCompleted = false;
