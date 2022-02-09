@@ -22,69 +22,6 @@ public class ContinuousIntegrationServer extends AbstractHandler
 {
 	
 
-	public static void deleteFolder(File folder) {
-	    File[] files = folder.listFiles();
-	    if(files!=null) { 
-	        for(File f: files) {
-	            if(f.isDirectory()) {
-	                deleteFolder(f);
-	            } else {
-	                f.delete();
-	            }
-	        }
-	    }
-	    folder.delete();
-	}
-	
-	public static void cloneRepo(String remotePath, File localPath) {
-		 try {
-			 CloneCommand cloneCommand = new CloneCommand();
-			 cloneCommand.setURI(remotePath);
-			 cloneCommand.setDirectory(localPath);
-			 cloneCommand.call();
-
-		 } catch (Exception e) {
-			 e.printStackTrace();
-		 }
-	}
-	
-	public static boolean gitPull(File localRepoPath, String branch) {
-		 boolean pullSuccessful;
-		 
-		 try (Git git = Git.open(localRepoPath)) {
-		 
-			 PullCommand pull = git.pull();
-			 pull.setRemote("origin");
-			 pull.setRemoteBranchName(branch); 
-			 pull.setStrategy(MergeStrategy.RECURSIVE);
-			 pull.setRebase(true);
-			 PullResult result = pull.call();
-			 pullSuccessful = result.isSuccessful();
-		 
-		 } catch (Exception e) {
-			 pullSuccessful = false; 
-		 }
-		 System.out.println("Pull");
-		 return pullSuccessful;
-	}
-	
-	public static boolean checkoutToBranch(File repositoryLocalPath, String branchName) {
-
-		  boolean actionCompleted = false;
-
-		  try (Git git = Git.open(repositoryLocalPath)) {
-		    git.checkout()
-		      .setName(branchName)
-		      .setStartPoint("origin/" + branchName)
-		      .call();
-		    
-		    actionCompleted = true;
-		  } catch (Exception e) {
-		    e.printStackTrace();
-		  }
-		  return actionCompleted;
-	}
-
 	
     public void handle(String target,
                        Request baseRequest,
@@ -104,13 +41,17 @@ public class ContinuousIntegrationServer extends AbstractHandler
         // for example
         // 1st clone your repository
         File localDirectory = new File("TestGitPull\\");
-    	String localPath = localDirectory.getPath();
-    	cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git",localDirectory);
-    	gitPull(localDirectory, "test");
-    	checkoutToBranch(localDirectory, "origin/test");
+    	Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git",localDirectory);
+    	GitConnector.gitPull(localDirectory, "test");
+    	GitConnector.checkoutToBranch(localDirectory, "origin/test");
         // 2nd compile the code
 
         response.getWriter().println("I'm testing");
+        
+        //Delete the directory
+    	git.getRepository().close();
+    	GitConnector.deleteDirectory(localDirectory);
+    	localDirectory.delete();
     }
  
     // used to start the CI server in command line
