@@ -29,7 +29,6 @@ public class ContinuousIntegrationServer extends AbstractHandler
                        HttpServletResponse response) 
         throws IOException, ServletException
     {
-    	response.getWriter().println(request.toString());
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
