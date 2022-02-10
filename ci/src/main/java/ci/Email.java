@@ -10,16 +10,15 @@ public class Email {
     private Session session;
     private final String sender = "group26CI@gmail.com";
     private final String pwd = "pas123&pas";
-    // private String[] recipients = { "elisabeth.chen010@gmail.com",
-    //         "carl.engelhardt@gmail.com",
-    //         "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org"
-    // };
-    private String[] recipients = { "echen@kth.se",
-    "elisabeth.chen100@gmail.com"}; //TODO: change test code
+    private String[] recipients = { "elisabeth.chen010@gmail.com",
+            "carl.engelhardt@gmail.com",
+            "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org"
+    };
+
     /**
-     * send an email
-     * 
+     * send an email. 
      * @param content content of the email
+     * @return if the email was successfully sent
      */
     public boolean send(String content) {
         try {

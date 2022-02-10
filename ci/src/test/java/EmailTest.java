@@ -6,6 +6,9 @@ import org.junit.Test;
 
 import ci.Email;
 
+/**
+ * try the Email class
+ */
 public class EmailTest {
     private Email email;
 
