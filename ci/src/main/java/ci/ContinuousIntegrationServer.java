@@ -30,6 +30,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         if(!githubEvent.equals("")){
             switch(githubEvent){
                 case "push":
+                	//Isolate the branchName from the payload 
                     String payload = getRequestPayload(request);
                     String issue = "issue%2F";
                     if(!payload.contains(issue)) System.out.println("Wrong branch name");
@@ -39,8 +40,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     	branchName+= payload.charAt(branchIdx);
                     	branchIdx ++;
                     }
+                    
                     System.out.println("Push");
-                    System.out.println("branch" + branchName);
                     break;
                 case "issues":
                     // DO issues action
