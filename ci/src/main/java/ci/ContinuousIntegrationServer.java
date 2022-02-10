@@ -26,10 +26,19 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                        HttpServletResponse response)
             throws IOException, ServletException {
         String githubEvent = request.getHeader("X-Github-Event");
-
         switch(githubEvent){
             case "push":
-                // DO on push actions
+                //Isolate the branchName from the payload
+                String payload = getRequestPayload(request);
+                String issue = "issue%2F";
+                if(!payload.contains(issue)) System.out.println("Wrong branch name");
+                int branchIdx = payload.indexOf(issue) + issue.length();
+                String branchName = "issue/";
+                while(! (payload.charAt(branchIdx) == (char) '%')) {
+                    branchName+= payload.charAt(branchIdx);
+                    branchIdx ++;
+                }
+
                 System.out.println("Push");
                 break;
             case "issues":
@@ -40,6 +49,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 System.out.println("No event match for " + githubEvent );
                 break;
         }
+
+
 
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
@@ -78,12 +89,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 stringBuilder.append("");
             }
         } catch (IOException ex) {
-            System.out.println("Error when parsing payload")
+            System.out.println("Error when parsing payload");
         } finally {
             try {
                 bufferedReader.close();
             } catch (IOException ex) {
-                throw ex;
+                ex.printStackTrace();
             }
 
         }
