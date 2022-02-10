@@ -17,20 +17,17 @@ import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.merge.MergeStrategy;
 
 /**
- Skeleton of a ContinuousIntegrationServer which acts as webhook
- See the Jetty documentation for API documentation of those classes.
+ * Skeleton of a ContinuousIntegrationServer which acts as webhook
+ * See the Jetty documentation for API documentation of those classes.
  */
-public class ContinuousIntegrationServer extends AbstractHandler
-{
-
+public class ContinuousIntegrationServer extends AbstractHandler {
 
 
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
                        HttpServletResponse response)
-            throws IOException, ServletException
-    {
+            throws IOException, ServletException {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
@@ -38,28 +35,26 @@ public class ContinuousIntegrationServer extends AbstractHandler
         System.out.println(target);
 
 
-
         // here you do all the continuous integration tasks
         // for example
         // 1st clone your repository
         File localDirectory = new File("GitPull\\");
         String branchName = "";
-    	Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git",localDirectory);
-    	GitConnector.gitPull(localDirectory, branchName);
-    	GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
+        Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
+        GitConnector.gitPull(localDirectory, branchName);
+        GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
         // 2nd compile the code
 
         response.getWriter().println("CI job Done");
 
         //Delete the directory
-    	git.getRepository().close();
-    	GitConnector.deleteDirectory(localDirectory);
-    	localDirectory.delete();
+        git.getRepository().close();
+        GitConnector.deleteDirectory(localDirectory);
+        localDirectory.delete();
     }
 
     // used to start the CI server in command line
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         Server server = new Server(8080);
         server.setHandler(new ContinuousIntegrationServer());
         server.start();
