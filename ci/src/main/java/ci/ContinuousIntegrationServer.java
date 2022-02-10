@@ -33,7 +33,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     String payload = getRequestPayload(request);
                     String issue = "issue%2F";
                     int branchIdx = payload.indexOf(issue) + issue.length();
-                    String branchName = "";
+                    String branchName = "issue\\";
                     while(payload.charAt(branchIdx) == (char) '%') {
                     	branchName+= payload.charAt(branchIdx);
                     	branchIdx ++;
