@@ -2,13 +2,13 @@ package ci;
 
 /**
  * Class that has the CI result of the pushed code, i.e. if the code compiled
- * (build) successfully and passed all the test. It also holds the error message
+ * successfully and passed all the test. It also holds the error message
  * if it did not success.
  */
 public class PushStatus {
-    private Boolean buildSuccess;
+    private Boolean compileSuccess;
     private Boolean testSuccess;
-    private String buildMessage = "";
+    private String compileMessage = "";
     private String testMessage = "";
     private String commitID;
 
@@ -24,26 +24,26 @@ public class PushStatus {
      * Constructor
      * 
      * @param commitID the ID for a commit
-     * @param buildSuccess if the pushed code was compiled successfully
+     * @param compileSuccess if the pushed code was compiled successfully
      * @param testSuccess  if the pushed code passed all tests
-     * @param buildMessage error message if the pushed code was not compiled
+     * @param compileMessage error message if the pushed code was not compiled
      *                     successfully
      * @param testMessage  error message if the pushed code didn't passed all tests
      */
-    public PushStatus(String commitID, Boolean buildSuccess, Boolean testSuccess, String buildMessage, String testMessage) {
+    public PushStatus(String commitID, Boolean compileSuccess, Boolean testSuccess, String compileMessage, String testMessage) {
         this.commitID = commitID;
-        this.buildSuccess = buildSuccess;
+        this.compileSuccess = compileSuccess;
         this.testSuccess = testSuccess;
-        this.buildMessage = buildMessage;
+        this.compileMessage = compileMessage;
         this.testMessage = testMessage;
     }
 
-    public Boolean getBuildSuccess() {
-        return this.buildSuccess;
+    public Boolean getCompileSuccess() {
+        return this.compileSuccess;
     }
 
-    public void setBuildSuccess(Boolean buildSuccess) {
-        this.buildSuccess = buildSuccess;
+    public void setCompileSuccess(Boolean compileSuccess) {
+        this.compileSuccess = compileSuccess;
     }
 
     public Boolean getTestSuccess() {
@@ -54,12 +54,12 @@ public class PushStatus {
         this.testSuccess = testSuccess;
     }
 
-    public String getBuildMessage() {
-        return this.buildMessage;
+    public String getCompileMessage() {
+        return this.compileMessage;
     }
 
-    public void setBuildMessage(String buildMessage) {
-        this.buildMessage = buildMessage;
+    public void setCompileMessage(String compileMessage) {
+        this.compileMessage = compileMessage;
     }
 
     public String getTestMessage() {
@@ -68,15 +68,6 @@ public class PushStatus {
 
     public void setTestMessage(String testMessage) {
         this.testMessage = testMessage;
-    }
-
-
-    public Boolean isBuildSuccess() {
-        return this.buildSuccess;
-    }
-
-    public Boolean isTestSuccess() {
-        return this.testSuccess;
     }
 
     public String getCommitID() {
