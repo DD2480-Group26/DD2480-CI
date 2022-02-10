@@ -24,7 +24,7 @@ public class Email {
         try {
             initEmail();
             authenticateSender();
-            createMesssage(content);
+            createMessage(content);
             System.out.println("Email sent");
             return true;
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class Email {
      * @throws AddressException
      * @throws MessagingException
      */
-    private void createMesssage(String content) throws AddressException, MessagingException {
+    private void createMessage(String content) throws AddressException, MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(sender));
         message.addRecipients(Message.RecipientType.TO, stringToAddress(recipients));
