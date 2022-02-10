@@ -1,3 +1,4 @@
+package ci;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;

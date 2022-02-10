@@ -28,6 +28,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compileOnly 'javax.servlet:servlet-api:2.5'
+    
+    //Dependecy used for the pull
+    implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.10.0.202012080955-r'
 }
 
 application {
