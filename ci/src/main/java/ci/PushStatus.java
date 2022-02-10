@@ -10,24 +10,28 @@ public class PushStatus {
     private Boolean testSuccess;
     private String buildMessage = "";
     private String testMessage = "";
+    private String commitID;
 
     /**
-     * Constructor with no parameters
+     * Constructor with one parameters
+     * @param commitID the ID for a commit
      */
-    public PushStatus() {
-
+    public PushStatus(String commitID) {
+        this.commitID = commitID;
     }
 
     /**
      * Constructor
      * 
+     * @param commitID the ID for a commit
      * @param buildSuccess if the pushed code was compiled successfully
      * @param testSuccess  if the pushed code passed all tests
      * @param buildMessage error message if the pushed code was not compiled
      *                     successfully
      * @param testMessage  error message if the pushed code didn't passed all tests
      */
-    public PushStatus(Boolean buildSuccess, Boolean testSuccess, String buildMessage, String testMessage) {
+    public PushStatus(String commitID, Boolean buildSuccess, Boolean testSuccess, String buildMessage, String testMessage) {
+        this.commitID = commitID;
         this.buildSuccess = buildSuccess;
         this.testSuccess = testSuccess;
         this.buildMessage = buildMessage;
@@ -64,5 +68,18 @@ public class PushStatus {
 
     public void setTestMessage(String testMessage) {
         this.testMessage = testMessage;
+    }
+
+
+    public Boolean isBuildSuccess() {
+        return this.buildSuccess;
+    }
+
+    public Boolean isTestSuccess() {
+        return this.testSuccess;
+    }
+
+    public String getCommitID() {
+        return this.commitID;
     }
 }
