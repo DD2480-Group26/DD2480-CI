@@ -35,7 +35,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     if(!payload.contains(issue)) System.out.println("Wrong branch name");
                     int branchIdx = payload.indexOf(issue) + issue.length();
                     String branchName = "issue\\";
-                    while(payload.charAt(branchIdx) == (char) '%') {
+                    while(! (payload.charAt(branchIdx) == (char) '%')) {
                     	branchName+= payload.charAt(branchIdx);
                     	branchIdx ++;
                     }
