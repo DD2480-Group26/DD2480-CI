@@ -14,7 +14,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
-
+import java.lang.ProcessBuilder;
 /**
  Skeleton of a ContinuousIntegrationServer which acts as webhook
  See the Jetty documentation for API documentation of those classes.
@@ -26,12 +26,14 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                        HttpServletResponse response)
             throws IOException, ServletException {
         String githubEvent = request.getHeader("X-Github-Event");
+        fileExecuter();
 
         if(!githubEvent.equals("")){
             switch(githubEvent){
                 case "push":
                     // DO on push actions
                     System.out.println("Push");
+                    fileExecuter();
                     break;
                 case "issues":
                     // DO issues action
@@ -54,6 +56,26 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // 2nd compile the code
 
         response.getWriter().println("CI job done");
+    }
+
+    public static void fileExecuter(){
+        System.out.println("helloooo");
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("./compile.sh");
+            Process p = pb.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = null;
+            while ((line = reader.readLine()) != null)
+            {
+                System.out.println("wow wow wow ");
+                System.out.println(line);
+            }
+
+        } catch (IOException ex) {
+            System.out.println("Error when commiting code.");
+        }
+
     }
 
     /**
@@ -80,12 +102,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 stringBuilder.append("");
             }
         } catch (IOException ex) {
-            System.out.println("Error when parsing payload")
+            System.out.println("Error when parsing payload");
         } finally {
             try {
                 bufferedReader.close();
             } catch (IOException ex) {
-                throw ex;
+                System.out.println("Error when closing payload buffer.");
             }
 
         }
@@ -101,5 +123,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         server.setHandler(new ContinuousIntegrationServer());
         server.start();
         server.join();
+        fileExecuter();
+
     }
 }
