@@ -5,26 +5,34 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.merge.MergeStrategy;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 
 /**
- Skeleton of a ContinuousIntegrationServer which acts as webhook
- See the Jetty documentation for API documentation of those classes.
+ * Skeleton of a ContinuousIntegrationServer which acts as webhook
+ * See the Jetty documentation for API documentation of those classes.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
+
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
                        HttpServletResponse response)
             throws IOException, ServletException {
+
         String githubEvent = request.getHeader("X-Github-Event");
         switch(githubEvent){
             case "push":
@@ -52,17 +60,29 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
 
 
+
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
 
 
+
         // here you do all the continuous integration tasks
         // for example
         // 1st clone your repository
+        File localDirectory = new File("GitPull\\");
+        String branchName = "";
+        Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
+        GitConnector.gitPull(localDirectory, branchName);
+        GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
         // 2nd compile the code
 
-        response.getWriter().println("CI job done");
+        response.getWriter().println("CI job Done");
+
+        //Delete the directory
+        git.getRepository().close();
+        GitConnector.deleteDirectory(localDirectory);
+        localDirectory.delete();
     }
 
     /**
@@ -104,8 +124,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     }
 
     // used to start the CI server in command line
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         Server server = new Server(8080);
         server.setHandler(new ContinuousIntegrationServer());
         server.start();
