@@ -40,7 +40,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     	branchIdx ++;
                     }
                     System.out.println("Push");
-                    System.out.println(branchName);
+                    System.out.println("branch" + branchName);
                     break;
                 case "issues":
                     // DO issues action
