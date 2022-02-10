@@ -27,22 +27,20 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             throws IOException, ServletException {
         String githubEvent = request.getHeader("X-Github-Event");
 
-        if(!githubEvent.equals("")){
-            switch(githubEvent){
-                case "push":
-                    // DO on push actions
-                    System.out.println("Push");
-                    break;
-                case "issues":
-                    // DO issues action
-                    System.out.println("Issues");
-                default:
-                    // DO default actions
-                    System.out.println("No event match for " + githubEvent );
-                    break;
-            }
-
+        switch(githubEvent){
+            case "push":
+                // DO on push actions
+                System.out.println("Push");
+                break;
+            case "issues":
+                // DO issues action
+                System.out.println("Issues");
+            default:
+                // DO default actions
+                System.out.println("No event match for " + githubEvent );
+                break;
         }
+
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
