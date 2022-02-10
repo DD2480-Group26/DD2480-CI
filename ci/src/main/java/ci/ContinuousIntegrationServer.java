@@ -53,7 +53,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // 1st clone your repository
         // 2nd compile the code
 
-        response.getWriter().println("CI job done");
+        response.getWriter().println(getRequestPayload(request));
     }
 
     /**
@@ -80,12 +80,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 stringBuilder.append("");
             }
         } catch (IOException ex) {
-            System.out.println("Error when parsing payload")
+            System.out.println("Error when parsing payload");
         } finally {
             try {
                 bufferedReader.close();
             } catch (IOException ex) {
-                throw ex;
+                ex.printStackTrace();
             }
 
         }
