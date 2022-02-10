@@ -1,10 +1,10 @@
 package ci;
-import static org.junit.Assert.*;
 
-import java.io.File;
-
-import org.eclipse.jgit.api.Git;
+import static org.junit.*;
 import org.junit.Test;
+import java.io.File;
+import org.eclipse.jgit.api.Git;
+
 
 public class GitConnectorTest extends GitConnector {
 
