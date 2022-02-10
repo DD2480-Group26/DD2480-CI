@@ -32,6 +32,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 case "push":
                     // DO on push actions
                     System.out.println("Push");
+                    System.out.println(getRequestPayload(request));
                     break;
                 case "issues":
                     // DO issues action
@@ -53,7 +54,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         // 1st clone your repository
         // 2nd compile the code
 
-        response.getWriter().println(getRequestPayload(request));
+        response.getWriter().println("CI job done");
     }
 
     /**
