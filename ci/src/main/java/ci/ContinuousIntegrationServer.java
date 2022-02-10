@@ -31,7 +31,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             switch(githubEvent){
                 case "push":
                     String payload = getRequestPayload(request);
-                    String issue = "issue%2F";
+                    String issue = "issue";
+                    if(payload.contains(issue)) System.out.println(payload.indexOf(issue));
                     int branchIdx = payload.indexOf(issue) + issue.length();
                     String branchName = "issue\\";
                     while(payload.charAt(branchIdx) == (char) '%') {
