@@ -67,10 +67,13 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 GitConnector.gitPull(localDirectory, branchName);
                 GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
 
+                // 2nd compile the code
                 PushTester pt = new PushTester();
                 PushStatus pushStatus = pt.getPushStatus(localDirectory);
+                Email email = new Email();
+                email.send(pushStatus);
 
-                // 2nd compile the code
+                
                 pushTester.fileExecuter(localDirectory);
 
                 response.getWriter().println("CI job Done");
