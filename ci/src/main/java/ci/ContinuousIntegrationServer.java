@@ -45,7 +45,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             case "push":
             	
             	JSONObject payload = new JSONObject(request.getParameter("payload"));
-            	System.out.print(payload);
+            	System.out.print(payload.get("ref"));
+            	System.out.print(payload.getNames(payload));
+            	System.out.println(payload.names());
+            	System.out.println(payload.keys());
             	
             	
             		
