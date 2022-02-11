@@ -48,8 +48,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	System.out.print(payload.get("ref"));
             	
             	
-            	System.out.print(payload.get("head_commit").getClass());
-            	System.out.print(payload.get("head_commit"));
+            	JSONObject headCommit = (JSONObject) payload.get("head_commit");
+            	System.out.print(headCommit.get("author"));
             	
             	
             	
