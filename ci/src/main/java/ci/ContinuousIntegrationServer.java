@@ -50,7 +50,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	
             	
             	String branchName = (String) payload.get("ref");
-            	branchName.replaceAll("refs/heads/", "");
+            	branchName = branchName.replaceAll("refs/heads/", "");
             	String id = (String) headCommit.get("id");
             	String email = (String) author.get("email");
             	
