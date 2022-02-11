@@ -32,7 +32,7 @@ For documentation, we used Javadoc annotations. For communication we are using d
 Compilation is implemented by cloning the relevant branch into its own directory, then running the command `./gradlew build` in the directory. While running this command, testing is also executed, and thus is implemented in the exact same way. After the build result has been gathered, the directory is deleted.
 
 ### Notification
-Created an Email class in Java with the package javax.mail. This Email class handles the notifications. For every push, it will send the CI result to every participant in the group project. The CI results include if the committed code compiled successfully and it passed all tests. The Email class will return if the is tested by checking if the email was successfully sent.
+Created an Email class in Java with the package javax.mail. This Email class handles the notifications. For every push, it will send the CI result to every participant in the group project. The CI results include if the committed code compiled successfully and if it passed all the tests. If it fails to either compile or to pass all tests it will give an error message for why it failed. The CI results will come from the pushStatus object that will be given as a parameter. The Email class will return if the email was sent successfully and is used in the unit tests for the email. In the unit test, both successfully and failed sent emails are tested, where different numbers of recipients are used. It also tests if it can get the correct content from the PushStatus-object, where different parameters in PushStatus are used.
 
 ### Execution
 For implementation of tests, see implementation of compilation above.
