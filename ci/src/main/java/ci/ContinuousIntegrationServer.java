@@ -42,10 +42,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         System.out.println(githubEvent);
         switch(githubEvent){
             case "push":
-            	System.out.println("param" + request.getParameter("payload"));
-            	System.out.println("param" + request.getParameter("payload").getClass());
+            	System.out.println(request.getParameter("payload").get("ref"));  
             	
-          	       
+            	String[] payload = request.getParameter("payload").split(",");
+            	for (String param : payload)
+                    System.out.println(param);
+            		
                 //Isolate the branchName from the payload
                 /*
                 String payload = getRequestPayload(request);
