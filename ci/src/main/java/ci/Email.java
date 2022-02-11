@@ -16,6 +16,25 @@ public class Email {
     };
 
     /**
+     * Get the parameters in pushStatus to a String
+     * @param pushStatus has parameters about the compile and test result of the pushed code
+     * @return email String
+     */
+    public String getContent(PushStatus pushStatus) {
+        String compileSuccessTxt = pushStatus.getCompileSuccess() ? "Success" : "Fail";
+        String testSuccessTxt = pushStatus.getTestSuccess() ? "Success" : "Fail";
+        String content = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", pushStatus.getCommitID(),
+                compileSuccessTxt, testSuccessTxt);
+        if (!pushStatus.getCompileSuccess()) {
+            content += "\n\nError message for compile:\n\t" + pushStatus.getCompileMessage();
+        }
+        if (!pushStatus.getTestSuccess()) {
+            content += "\n\nError message for test:\n\t" + pushStatus.getTestMessage();
+        }
+        return content;
+    }
+
+    /**
      * send an email. 
      * @param content content of the email
      * @return if the email was successfully sent
