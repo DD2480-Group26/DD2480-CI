@@ -45,30 +45,18 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             case "push":
             	
             	JSONObject payload = new JSONObject(request.getParameter("payload"));
-            	System.out.print(payload.get("ref"));
-            	
-            	
             	JSONObject headCommit = (JSONObject) payload.get("head_commit");
-            	String id = (String) headCommit.get("id");
             	JSONObject author = (JSONObject) headCommit.get("author");
+            	
+            	
+            	String branchName = (String) payload.get("ref");
+            	branchName.replaceAll("refs/heads/", "");
+            	String id = (String) headCommit.get("id");
             	String email = (String) author.get("email");
-            	System.out.println(email + id);
             	
             	
             	
-            		
-                //Isolate the branchName from the payload
-                /*
-                String payload = getRequestPayload(request);
-                String issue = "issue%2F";
-                if(!payload.contains(issue)) System.out.println("Wrong branch name");
-                int branchIdx = payload.indexOf(issue) + issue.length();
-                String branchName = "issue/";
-                while(! (payload.charAt(branchIdx) == (char) '%')) {
-                    branchName+= payload.charAt(branchIdx);
-                    branchIdx ++;
-                }*/
-
+            	System.out.println(branchName);
 
                 // here you do all the continuous integration tasks
                 // for example
