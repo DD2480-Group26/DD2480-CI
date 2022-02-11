@@ -42,6 +42,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         switch(githubEvent){
             case "push":
                 //Isolate the branchName from the payload
+                /*
                 String payload = getRequestPayload(request);
                 String issue = "issue%2F";
                 if(!payload.contains(issue)) System.out.println("Wrong branch name");
@@ -50,10 +51,9 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 while(! (payload.charAt(branchIdx) == (char) '%')) {
                     branchName+= payload.charAt(branchIdx);
                     branchIdx ++;
-                }
+                }*/
 
 
-                System.out.println("Push");
                 // here you do all the continuous integration tasks
                 // for example
                 // 1st clone your repository
@@ -61,14 +61,14 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
                 File localDirectory = new File("GitPull/");
 
-                branchName = "server-test";
+                String branchName = "server-test";
 
                 Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                 GitConnector.gitPull(localDirectory, branchName);
                 GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
 
                 PushTester pt = new PushTester();
-                pt.getPushStatus(localDirectory);
+                PushStatus pushStatus = pt.getPushStatus(localDirectory);
 
                 // 2nd compile the code
                 pushTester.fileExecuter(localDirectory);
