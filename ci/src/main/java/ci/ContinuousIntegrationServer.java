@@ -43,8 +43,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             case "push":
             	
             	System.out.println(request.getParameterValues("ref"));
-            	System.out.println(request.getParameterValues("pusher"));
+            	System.out.println(request.getParameter("pusher"));
             	System.out.println(request.getParameterValues("id"));
+            	System.out.println(request.getAttribute("id"));
+            	System.out.println(request.getAttributeNames());
                 //Isolate the branchName from the payload
                 /*
                 String payload = getRequestPayload(request);
