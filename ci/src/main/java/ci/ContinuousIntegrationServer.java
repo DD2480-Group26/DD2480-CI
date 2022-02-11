@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.lang.ProcessBuilder;
 import java.util.Enumeration;
+import org.json.*;
 /**
  * Skeleton of a ContinuousIntegrationServer which acts as webhook
  * See the Jetty documentation for API documentation of those classes. ok
@@ -43,9 +44,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         switch(githubEvent){
             case "push":
             	
-            	String[] payload = request.getParameter("payload").split(",");
-            	for (String param : payload)
-                    System.out.println(param);
+            	JSONObject payload = new JSONObject(request.getParameter("payload"));
+            	System.out.print(payload);
+            	
+            	
             		
                 //Isolate the branchName from the payload
                 /*
