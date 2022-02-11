@@ -30,8 +30,8 @@ public class GitConnectorTest extends GitConnector {
         //Testing the checkout function
         File localDirectory = new File("TestGitPull\\");
         Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
-        GitConnector.gitPull(localDirectory, "issue2");
-        assertTrue(GitConnector.checkoutToBranch(localDirectory, "origin/issue2"));
+        GitConnector.gitPull(localDirectory, "test");
+        assertTrue(GitConnector.checkoutToBranch(localDirectory, "origin/test"));
 
         //Delete the directory
         git.getRepository().close();
