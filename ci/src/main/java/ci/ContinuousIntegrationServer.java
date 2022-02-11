@@ -55,34 +55,32 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	String email = (String) author.get("email");
             	
             	
-            	
-            	System.out.println(branchName);
 
                 // here you do all the continuous integration tasks
                 // for example
                 // 1st clone your repository
-//                PushTester pushTester = new PushTester();
-//
-//                File localDirectory = new File("GitPull/");
-//
-//                String branchName = "server-test";
-//
-//                Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
-//                GitConnector.gitPull(localDirectory, branchName);
-//                GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
-//
-//                PushTester pt = new PushTester();
-//                PushStatus pushStatus = pt.getPushStatus(localDirectory);
-//
-//                // 2nd compile the code
-//                pushTester.fileExecuter(localDirectory);
-//
-//                response.getWriter().println("CI job Done");
-//
-//                //Delete the directory
-//                git.getRepository().close();
-//                GitConnector.deleteDirectory(localDirectory);
-//                localDirectory.delete();
+                PushTester pushTester = new PushTester();
+
+                File localDirectory = new File("GitPull/");
+
+                String branchName = "server-test";
+
+                Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
+                GitConnector.gitPull(localDirectory, branchName);
+                GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
+
+                PushTester pt = new PushTester();
+                PushStatus pushStatus = pt.getPushStatus(localDirectory);
+
+                // 2nd compile the code
+                pushTester.fileExecuter(localDirectory);
+
+                response.getWriter().println("CI job Done");
+
+                //Delete the directory
+                git.getRepository().close();
+                GitConnector.deleteDirectory(localDirectory);
+                localDirectory.delete();
                 break;
             case "issues":
                 // DO issues action
