@@ -29,9 +29,10 @@ For documentation, we used Javadoc annotations. For communication we are using d
 ### Compilation
 Compilation is done using gradle and the following command : "./gradlew run"
 
-Gradle manage all the depencies. For example, the library we are using to clone and pull the git repository relies on others that are automatically imported by gradle.
+Gradle manage all the dependencies. For example, the library we are using to clone and pull the git repository relies on others that are automatically imported by gradle.
 
 ### Notification
+Created an Email class in Java with the package javax.mail. This Email class handles the notifications. For every push, it will send the CI result to every participant in the group project. The CI results include if the committed code compiled successfully and it passed all tests. The Email class will return if the is tested by checking if the email was successfully sent.
 
 ### Execution
 
