@@ -41,12 +41,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         System.out.println(githubEvent);
         switch(githubEvent){
             case "push":
-            	
-            	System.out.println(request.getParameterValues("ref"));
-            	System.out.println(request.getParameter("pusher"));
-            	System.out.println(request.getParameterValues("id"));
-            	System.out.println(request.getAttribute("id"));
-            	System.out.println(request.getAttributeNames());
+            	System.out.println(request.getAttributeNames().toString());
+            	System.out.println(request.getParameterNames().toString());
                 //Isolate the branchName from the payload
                 /*
                 String payload = getRequestPayload(request);
