@@ -21,7 +21,7 @@ public class EmailTest {
     
     @Test
     public void TestEmailSuccessDefaultRecipients() {
-        assertTrue(email.send("test successfull sent email for default recipients"));
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "", "test successfull sent email for default recipients")));
     }
 
     @Test
@@ -29,21 +29,21 @@ public class EmailTest {
         String[] recipients = { "elisabeth.chen110@gmail.com",
                 "elisabeth.chen100@gmail.com", "echen@kth.se" };
         email.changeRecipients(recipients);
-        assertTrue(email.send("test successfull sent email, changed to three recipients"));
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "", "test successfull sent email, changed to three recipients")));
     }
 
     @Test
     public void TestEmailSuccessOneGivenRecipients() {
         String[] recipients = { "elisabeth.chen110@gmail.com"};
         email.changeRecipients(recipients);
-        assertTrue(email.send("test successfull sent email, changed to one recipients"));
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "", "test successfull sent email, changed to one recipients")));
     }
 
     @Test
     public void TestEmailFailOneGivenRecipients() {
         String[] recipients = { "this is not an email address"};
         email.changeRecipients(recipients);
-        assertFalse(email.send("test failed sent email, changed to one recipients"));
+        assertFalse(email.send(new PushStatus("gf12d44g43c1fb", true, false, "", "test failed sent email, changed to one recipients")));
     }
 
     @Test
