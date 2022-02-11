@@ -55,7 +55,7 @@ public class EmailTest {
     }
 
     @Test
-    public void TestGetContentComileSuccessTestFail() {
+    public void TestGetContentCompileSuccessTestFail() {
         String commitID = "33ds2e12saa";
         String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Success", "Fail");
         expected += "\n\nError message for test:\n\ttest failed";
@@ -64,7 +64,7 @@ public class EmailTest {
     }
 
     @Test
-    public void TestGetContentComileFailTestFail() {
+    public void TestGetContentCompileFailTestFail() {
         String commitID = "33ds2e12saa";
         String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Fail", "Fail");
         expected += "\n\nError message for compile:\n\tcompile failed";
