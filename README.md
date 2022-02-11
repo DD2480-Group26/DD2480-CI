@@ -27,9 +27,7 @@ Below is a description of our workflow with github when working on these issues:
 For documentation, we used Javadoc annotations. For communication we are using different tools as Google Drive, Zoom and Discord.
 
 ### Compilation
-Compilation is done using gradle and the following command : "./gradlew run"
-
-Gradle manage all the dependencies. For example, the library we are using to clone and pull the git repository relies on others that are automatically imported by gradle.
+Compilation is implemented by cloning the relevant branch into its own directory, then running the command `./gradlew build` in the directory. While running this command, testing is also executed, and thus is implemented in the exact same way. After the build result has been gathered, the directory is deleted.
 
 ### Notification
 Created an Email class in Java with the package javax.mail. This Email class handles the notifications. For every push, it will send the CI result to every participant in the group project. The CI results include if the committed code compiled successfully and it passed all tests. The Email class will return if the is tested by checking if the email was successfully sent.
