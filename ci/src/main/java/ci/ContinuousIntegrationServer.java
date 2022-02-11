@@ -41,6 +41,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         System.out.println(githubEvent);
         switch(githubEvent){
             case "push":
+            	
+            	System.out.println(request.getParameterValues("ref"));
+            	System.out.println(request.getParameterValues("pusher"));
+            	System.out.println(request.getParameterValues("id"));
                 //Isolate the branchName from the payload
                 /*
                 String payload = getRequestPayload(request);
@@ -57,28 +61,28 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 // here you do all the continuous integration tasks
                 // for example
                 // 1st clone your repository
-                PushTester pushTester = new PushTester();
-
-                File localDirectory = new File("GitPull/");
-
-                String branchName = "server-test";
-
-                Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
-                GitConnector.gitPull(localDirectory, branchName);
-                GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
-
-                PushTester pt = new PushTester();
-                PushStatus pushStatus = pt.getPushStatus(localDirectory);
-
-                // 2nd compile the code
-                pushTester.fileExecuter(localDirectory);
-
-                response.getWriter().println("CI job Done");
-
-                //Delete the directory
-                git.getRepository().close();
-                GitConnector.deleteDirectory(localDirectory);
-                localDirectory.delete();
+//                PushTester pushTester = new PushTester();
+//
+//                File localDirectory = new File("GitPull/");
+//
+//                String branchName = "server-test";
+//
+//                Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
+//                GitConnector.gitPull(localDirectory, branchName);
+//                GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
+//
+//                PushTester pt = new PushTester();
+//                PushStatus pushStatus = pt.getPushStatus(localDirectory);
+//
+//                // 2nd compile the code
+//                pushTester.fileExecuter(localDirectory);
+//
+//                response.getWriter().println("CI job Done");
+//
+//                //Delete the directory
+//                git.getRepository().close();
+//                GitConnector.deleteDirectory(localDirectory);
+//                localDirectory.delete();
                 break;
             case "issues":
                 // DO issues action
