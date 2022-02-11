@@ -70,6 +70,6 @@ public class EmailTest {
         expected += "\n\nError message for compile:\n\tcompile failed";
         expected += "\n\nError message for test:\n\ttest failed";
         String actual =email.getContent(new PushStatus(commitID, false, false, "compile failed", "test failed"));
-        // assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }
