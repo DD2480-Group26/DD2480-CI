@@ -5,6 +5,12 @@ import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+/**
+ * Send a email to every participant in the group project (i.e. the recipients)
+ * for every push. In the email, it includes the results of the compile and test
+ * of the pushed code and the corresponding error message if either compile or
+ * test fails.
+ */
 public class Email {
     private Properties prop;
     private Session session;
@@ -17,7 +23,9 @@ public class Email {
 
     /**
      * Get the parameters in pushStatus to a String
-     * @param pushStatus has parameters about the compile and test result of the pushed code
+     * 
+     * @param pushStatus has parameters about the compile and test result of the
+     *                   pushed code
      * @return email String
      */
     public String getContent(PushStatus pushStatus) {
@@ -35,15 +43,17 @@ public class Email {
     }
 
     /**
-     * send an email. 
-     * @param content content of the email
-     * @return if the email was successfully sent
+     * send an email to all recipients.
+     * 
+     * @param PushStatus has parameters about the compile and test result of the
+     *                   pushed code. Used to get the content of the email
+     * @return boolean, if the email was successfully sent
      */
-    public boolean send(String content) {
+    public boolean send(PushStatus pushStatus) {
         try {
             initEmail();
             authenticateSender();
-            createMessage(content);
+            createMessage(getContent(pushStatus));
             System.out.println("Email sent");
             return true;
         } catch (Exception e) {
@@ -110,8 +120,9 @@ public class Email {
     }
 
     /**
-     * change the recipients to recip
-     * @param recip addresses in string array
+     * change the recipients
+     * 
+     * @param recip addresses it changes to
      */
     public void changeRecipients(String[] recip) {
         recipients = recip;
@@ -119,6 +130,7 @@ public class Email {
 
     /**
      * return recipients
+     * 
      * @return recipients
      */
     public String[] getRecipients() {
