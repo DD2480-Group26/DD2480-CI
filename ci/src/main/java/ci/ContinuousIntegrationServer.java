@@ -46,8 +46,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	
             	JSONObject payload = new JSONObject(request.getParameter("payload"));
             	System.out.print(payload.get("ref"));
+            	
+            	
+            	System.out.print(payload.get("head_commit").getClass());
             	System.out.print(payload.get("head_commit"));
-            	System.out.print(payload.get("head_commit").get("author").get("email"));
             	
             	
             	
