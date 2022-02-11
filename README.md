@@ -19,6 +19,8 @@ Julia: Implement a handler for incoming http requests to our server. Checking an
 
 Carl: Gradle.
 
+Hemen: Implement the function for test code on commit.
+
 ### General
 As a group, we broke down the requirements of the projects into issues describing features. Then we assigned a person responsible for an issue during our meetings. Some other issues were created and assigned during the development of the projects.
 
@@ -33,7 +35,7 @@ Compilation is implemented by cloning the relevant branch into its own directory
 Created an Email class in Java with the package javax.mail. This Email class handles the notifications. For every push, it will send the CI result to every participant in the group project. The CI results include if the committed code compiled successfully and it passed all tests. The Email class will return if the is tested by checking if the email was successfully sent.
 
 ### Execution
-
+For implementation of tests, see implementation of compilation above.
 
 ### Group state
 According to the checklist for Way-of-working given in “Essence -kernel and language for software engineering methods,” (Omg.org, 2018), the group could be said to be in the “Collaborating” state. Our communication is clearly better than it was during the first assignment. For example, a few days after the first assignment presentation, we did a reflection on the points that could be improved in our workflow. In particular, before every meeting, everyone should define the points that need to be discussed. This made the meetings quicker and more efficient.  If someone needs some help on an issue, we also decided to do small meetings with 2 or 3 people. Finally, most of the work is done, and every team member knows and trusts each other, but we are not performing well enough to finish the P+ requirements in time. Because of this point,  we don’t think that we can pretend to be the “Performing” state for now. We are aiming to reach this state for the next assignment.
