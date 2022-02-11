@@ -2,7 +2,7 @@
 
 This project implements the [Continous Integration (Asssignment 2)](https://kth.instructure.com/courses/31884/assignments/185708).
 
-This program is the core code for a CI server linked to GitHub. On push the GitHub repository send an https request to the server. The server then clone the repository, compile and test the code. 
+This program is the core code for a CI server linked to GitHub. On push the GitHub repository send an https request to the server. The server then clone the repository, compile and test the code. Then an e-mail is send to the members of the team.
 
 ## Project structure
 The main class are located in [`ci/src/main/java`](ci/src/main/ja).
@@ -11,8 +11,29 @@ The test class are located in [`ci/src/test/java`](ci/src/test/ja)
 ## Statement of contributions
 
 ### Individual
+Elisabeth: Notification with email, unit test for notification, PushStatus.
+
+Victor: JGit library, git connection, clone… , and unit test for the pull/checkout command.
+
+Julia: Implement a handler for incoming http requests to our server. Checking and parsing payload. Test compilation status for committed code.
+
+Carl: Gradle.
 
 ### General
+As a group, we broke down the requirements of the projects into issues describing features. Then we assigned a person responsible for an issue during our meetings. Some other issues were created and assigned during the development of the projects.
+
+Below is a description of our workflow with github when working on these issues:
+
+For documentation, we used Javadoc annotations. For communication we are using different tools as Google Drive, Zoom and Discord.
+
+### Compilation
+Compilation is done using gradle and the following command : "./gradlew run"
+
+Gradle manage all the depencies. For example, the library we are using to clone and pull the git repository relies on others that are automatically imported by gradle.
+
+### Notification
+
+### Execution
 
 
 ### Group state
