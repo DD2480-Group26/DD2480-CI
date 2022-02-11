@@ -49,9 +49,9 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	
             	
             	JSONObject headCommit = (JSONObject) payload.get("head_commit");
-            	String id = headCommit.get("id");
+            	String id = (String) headCommit.get("id");
             	JSONObject author = (JSONObject) headCommit.get("author");
-            	String email = author.get("email");
+            	String email = (String) author.get("email");
             	System.out.println(email + id);
             	
             	
