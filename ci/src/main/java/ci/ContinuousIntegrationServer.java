@@ -70,10 +70,15 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 // 2nd compile the code
                 PushTester pt = new PushTester();
                 PushStatus pushStatus = pt.getPushStatus(localDirectory, id);
-                Email emailObj = new Email();
-                emailObj.send(pushStatus);
 
-                
+                // notify the author
+                Email emailObj = new Email();
+                if (emailObj.isAuthorizedAuthor(email)) {
+                    emailObj.send(pushStatus, email);
+                } else {
+                    emailObj.send("You are not authorized to push to this project", email);
+                }    
+
                 pushTester.fileExecuter(localDirectory);
 
                 response.getWriter().println("CI job Done");
