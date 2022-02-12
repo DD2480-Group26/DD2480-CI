@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.lang.ProcessBuilder;
+import java.util.Enumeration;
+import org.json.*;
 /**
  * Skeleton of a ContinuousIntegrationServer which acts as webhook
  * See the Jetty documentation for API documentation of those classes. ok
@@ -41,18 +43,18 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         System.out.println(githubEvent);
         switch(githubEvent){
             case "push":
-                //Isolate the branchName from the payload
-                /*
-                String payload = getRequestPayload(request);
-                String issue = "issue%2F";
-                if(!payload.contains(issue)) System.out.println("Wrong branch name");
-                int branchIdx = payload.indexOf(issue) + issue.length();
-                String branchName = "issue/";
-                while(! (payload.charAt(branchIdx) == (char) '%')) {
-                    branchName+= payload.charAt(branchIdx);
-                    branchIdx ++;
-                }*/
-
+            	
+            	JSONObject payload = new JSONObject(request.getParameter("payload"));
+            	JSONObject headCommit = (JSONObject) payload.get("head_commit");
+            	JSONObject author = (JSONObject) headCommit.get("author");
+            	
+            	
+            	String branchName = (String) payload.get("ref");
+            	branchName = branchName.replaceAll("refs/heads/", "");
+            	String id = (String) headCommit.get("id");
+            	String email = (String) author.get("email");
+            	
+            	
 
                 // here you do all the continuous integration tasks
                 // for example
