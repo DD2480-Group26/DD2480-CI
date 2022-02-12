@@ -1,4 +1,6 @@
 exampleBuild1
-date:
-commitID
-pushStatus
+date: 2022/10/11 14:53
+commitID: fuplwp23
+pushStatus {
+    
+}
