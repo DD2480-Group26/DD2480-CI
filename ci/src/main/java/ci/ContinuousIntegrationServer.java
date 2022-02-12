@@ -54,7 +54,6 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	String id = (String) headCommit.get("id");
             	String timestamp = (String) headCommit.get("timestamp");
             	String email = (String) author.get("email");
-                System.out.println("timestamp:" + timestamp);
             	
             	
 
