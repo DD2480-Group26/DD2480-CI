@@ -11,6 +11,7 @@ public class PushStatus {
     private String compileMessage = "";
     private String testMessage = "";
     private String commitID;
+    private String commitDate;
 
     /**
      * Constructor with one parameters
@@ -42,35 +43,23 @@ public class PushStatus {
         return this.compileSuccess;
     }
 
-    public void setCompileSuccess(Boolean compileSuccess) {
-        this.compileSuccess = compileSuccess;
-    }
-
     public Boolean getTestSuccess() {
         return this.testSuccess;
-    }
-
-    public void setTestSuccess(Boolean testSuccess) {
-        this.testSuccess = testSuccess;
     }
 
     public String getCompileMessage() {
         return this.compileMessage;
     }
 
-    public void setCompileMessage(String compileMessage) {
-        this.compileMessage = compileMessage;
-    }
-
     public String getTestMessage() {
         return this.testMessage;
     }
 
-    public void setTestMessage(String testMessage) {
-        this.testMessage = testMessage;
-    }
-
     public String getCommitID() {
         return this.commitID;
+    }
+
+    public String getCommitDate() {
+        return this.commitDate;
     }
 }
