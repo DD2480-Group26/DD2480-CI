@@ -48,15 +48,22 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             throws IOException, ServletException {
 
         String url = request.getRequestURL().toString();
+
+        String subDirectory = "";
+        boolean singleBuild = false;
+        int ifSubDirectoryURL = url.indexOf('/', 8);
+        // true if URL matches http(s)://<host>/*, false if matches http(s)://<host>
+        if (ifSubDirectoryURL != -1) {
+            subDirectory = url.substring(ifSubDirectoryURL, url.length());
+            // use regex to see if any specific build is accessed
+            Pattern singleBuildPattern = Pattern.compile("/builds/.");
+            Matcher matcher = singleBuildPattern.matcher(subDirectory);
+            // true if URL matches regex of singleBuildPattern
+            singleBuild = matcher.find();
+        }
         
-        // use regex to see if any specific build is accessed
-        Pattern singleBuildPattern = Pattern.compile("http://localhost:" + port + "/builds/.");
-        Matcher matcher = singleBuildPattern.matcher(url);
-        // true if URL matches regex of singleBuildPattern
-        boolean singleBuild = matcher.find();
-        
-        // show list of all stored builds
-        if (url.equals("http://localhost:" + port + "/builds")) {
+        // show list of all stored builds if URL is http(s)://<host>/builds
+        if (subDirectory.equals("/builds")) {
             response.setContentType("text/html");
 
             // get all build filenames in buildHistory directory
@@ -77,6 +84,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
         }
+        // show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
         else if (singleBuild) {
             String output = "";
 
@@ -91,6 +99,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 while ((line = br.readLine()) != null) {
                     output += line + "\n";
                 }
+                br.close();
             }
             catch (Exception e) {
                 output += "error: no such build exists";
