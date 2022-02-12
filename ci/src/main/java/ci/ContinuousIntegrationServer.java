@@ -63,15 +63,13 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
                 File localDirectory = new File("GitPull/");
 
-                // branchName = "server-test";
-
                 Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                 GitConnector.gitPull(localDirectory, branchName);
                 GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
 
                 // 2nd compile the code
                 PushTester pt = new PushTester();
-                PushStatus pushStatus = pt.getPushStatus(localDirectory);
+                PushStatus pushStatus = pt.getPushStatus(localDirectory, id);
                 Email emailObj = new Email();
                 emailObj.send(pushStatus);
 
