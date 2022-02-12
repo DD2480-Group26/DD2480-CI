@@ -68,9 +68,6 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             
             // iterate through each build
             for (String build : buildFileNames) {
-                File buildFile = new File("../buildHistory/" + build);
-                BufferedReader br = new BufferedReader(new FileReader(buildFile));
-                String line;
                 String buildURL = url + "/" + build;
                 // add link to the build in the html
                 output += "<a href=\"" + buildURL + "\">" + build + "</a> <br>";
