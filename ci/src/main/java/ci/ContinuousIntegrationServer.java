@@ -52,7 +52,9 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             	String branchName = (String) payload.get("ref");
             	branchName = branchName.replaceAll("refs/heads/", "");
             	String id = (String) headCommit.get("id");
+            	String timestamp = (String) headCommit.get("timestamp");
             	String email = (String) author.get("email");
+                System.out.println("timestamp:" + timestamp);
             	
             	
 
@@ -69,7 +71,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
                 // 2nd compile the code
                 PushTester pt = new PushTester();
-                PushStatus pushStatus = pt.getPushStatus(localDirectory, id);
+                PushStatus pushStatus = pt.getPushStatus(localDirectory, id, timestamp);
                 Email emailObj = new Email();
                 emailObj.send(pushStatus);
 
