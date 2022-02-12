@@ -63,8 +63,6 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
                 File localDirectory = new File("GitPull/");
 
-                String branchName = "server-test";
-
                 Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                 GitConnector.gitPull(localDirectory, branchName);
                 GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
