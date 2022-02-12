@@ -47,8 +47,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                        HttpServletResponse response)
             throws IOException, ServletException {
 
-        String url = ((HttpServletRequest)request).getRequestURL().toString();
-        System.out.println(url);
+        String url = request.getRequestURL().toString();
         
         // use regex to see if any specific build is accessed
         Pattern singleBuildPattern = Pattern.compile("http://localhost:" + port + "/builds/.");
