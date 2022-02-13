@@ -11,7 +11,7 @@ import ci.PushStatus;
 /**
  * try the Email class
  */
-public class EmailTest2 {
+public class EmailTest {
     private Email email;
 
     @Before
