@@ -19,16 +19,13 @@ import java.io.InputStream;
 import org.json.*;
 
 /**
- * Creates a CI server which acts as a webhook. To run the CI server, use
- * "./gradlew run". If it shows not permitted then run "chmod 777 gradlew"
- * before. 
+ * The CI server handles compiling and testing the pushed code. The author of
+ * the commit (pushed code) will be notified about the results with an email.
+ * If the author is not authorized (i.e. is not a member of the team
+ * DD2480-Group26), the code will not be compiled and tested and the author will
+ * receive an email about his/her push was unauthorized.
  * 
- * To set the webhook, open another terminal window, then run "./ngrok http 8080" 
- * to get an unique URL (e.g. http://8929b010.ngrok.io). Create a webhook in 
- * GitHub and add this URL.
- * 
- * The CI server handles compiling and testing the pushed code. All participants
- * will be notified about the CI result with an email.
+ * See README for how to set up the CI server.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
 
@@ -42,7 +39,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         System.out.println(githubEvent);
         switch (githubEvent) {
             case "push":
-                // get information from the HTTP request
+                // get informations from the request
                 JSONObject payload = new JSONObject(request.getParameter("payload"));
                 JSONObject headCommit = (JSONObject) payload.get("head_commit");
                 JSONObject author = (JSONObject) headCommit.get("author");
@@ -50,23 +47,28 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 String branchName = (String) payload.get("ref");
                 branchName = branchName.replaceAll("refs/heads/", "");
                 String id = (String) headCommit.get("id");
+                String timestamp = (String) headCommit.get("timestamp");
                 String email = (String) author.get("email");
 
-                // TODO: add what is does here
-                PushTester pushTester = new PushTester();   // TODO: why two pushTester?
-                
-                File localDirectory = new File("GitPull/");
-                
                 // clone repository
+                File localDirectory = new File("GitPull/");
                 Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                 GitConnector.gitPull(localDirectory, branchName);
                 GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
 
-                // compile and test the code
-                PushTester pt = new PushTester();
-                PushStatus pushStatus = pt.getPushStatus(localDirectory);
+                // create email object that handel notification
+                Email emailObj = new Email();
+                if (emailObj.isAuthorizedAuthor(email)) {
+                    // compile and test the code if the commit author is authorized
+                    PushTester pt = new PushTester();
+                    PushStatus pushStatus = pt.getPushStatus(localDirectory, id, timestamp);
 
-                pushTester.fileExecuter(localDirectory);
+                    // notify the author about the CI result
+                    emailObj.send(pushStatus, email);
+                } else {
+                    // notify the unauthorized author
+                    emailObj.send("You are not authorized to push to this project", email);
+                }
 
                 response.getWriter().println("CI job Done");
 
