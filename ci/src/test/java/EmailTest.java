@@ -11,14 +11,14 @@ import ci.PushStatus;
 /**
  * try the Email class
  */
-public class EmailTest {
+public class EmailTest2 {
     private Email email;
 
     @Before
     public void createEmailObject() {
         email = new Email();
     }
-
+  
     @Test
     public void TestSendStringOneRecipientSuccess() {
         assertTrue(email.send("test success sending one recipient", "elisabeth.chen110@gmail.com"));
@@ -43,7 +43,7 @@ public class EmailTest {
 
     @Test
     public void TestSendSuccessPushStatusDefaultRecipients() {
-        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "",
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", "2022-02-12T21:30:52+01:00", true, false, "",
                 "test successfull sent email for default recipients")));
     }
 
@@ -52,36 +52,33 @@ public class EmailTest {
         String[] recipients = { "elisabeth.chen110@gmail.com",
                 "elisabeth.chen100@gmail.com", "echen@kth.se" };
         email.changeRecipients(recipients);
-        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "",
-                "test successfull sent email, changed to three recipients")));
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", "2022-02-12T21:30:52+01:00", true, false, "", "test successfull sent email, changed to three recipients")));
+    }
+    
+    @Test
+    public void TestSendFailPushStatusChangedOneRecipients() {
+        String[] recipients = { "this is not an email address" };
+        email.changeRecipients(recipients);
+        assertFalse(email.send(new PushStatus("gf12d44g43c1fb", "2022-02-12T21:30:52+01:00", true, false, "", "test failed sent email, changed to one recipients")));
     }
 
     @Test
     public void TestSendSuccessPushStatusOneGivenRecipients() {
-        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", true, false, "",
+        assertTrue(email.send(new PushStatus("gf12d44g43c1fb", "2022-02-12T21:30:52+01:00", true, false, "",
                 "test successfull sent email, changed to one recipients"), "elisabeth.chen010@gmail.com"));
     }
 
     @Test
-    public void TestSendPushStatusFailChangedOneRecipients() {
-        String[] recipients = { "this is not an email address" };
-        email.changeRecipients(recipients);
-        assertFalse(email.send(new PushStatus("gf12d44g43c1fb", true, false, "",
-                "test failed sent email, changed to one recipients")));
-    }
-
-    @Test
-    public void TestSendPushStatusFailOneGivenRecipients() {
-        assertFalse(email.send(new PushStatus("gf12d44g43c1fb", true, false, "",
+    public void TestSendPushFailStatusOneGivenRecipients() {
+        assertFalse(email.send(new PushStatus("gf12d44g43c1fb", "2022-02-12T21:30:52+01:00", true, false, "",
                 "test failed sent email, changed to one recipients"), "this is not an email address"));
     }
 
     @Test
     public void TestGetContentAllSuccess() {
         String commitID = "33ds2e12saa";
-        String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Success",
-                "Success");
-        String actual = email.getContent(new PushStatus(commitID, true, true, "", ""));
+        String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Success", "Success");
+        String actual =email.getContent(new PushStatus(commitID, "2022-02-12T21:30:52+01:00", true, true, "", ""));
         assertEquals(expected, actual);
     }
 
@@ -91,7 +88,7 @@ public class EmailTest {
         String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Success",
                 "Fail");
         expected += "\n\nError message for test:\n\ttest failed";
-        String actual = email.getContent(new PushStatus(commitID, true, false, "", "test failed"));
+        String actual =email.getContent(new PushStatus(commitID, "2022-02-12T21:30:52+01:00", true, false, "", "test failed"));
         assertEquals(expected, actual);
     }
 
@@ -101,7 +98,7 @@ public class EmailTest {
         String expected = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", commitID, "Fail", "Fail");
         expected += "\n\nError message for compile:\n\tcompile failed";
         expected += "\n\nError message for test:\n\ttest failed";
-        String actual = email.getContent(new PushStatus(commitID, false, false, "compile failed", "test failed"));
+        String actual =email.getContent(new PushStatus(commitID, "2022-02-12T21:30:52+01:00", false, false, "compile failed", "test failed"));
         assertEquals(expected, actual);
     }
 }
