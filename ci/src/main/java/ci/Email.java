@@ -1,5 +1,6 @@
 package ci;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.*;
@@ -20,6 +21,20 @@ public class Email {
             "carl.engelhardt@gmail.com",
             "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org"
     };
+
+    /**
+     * check if the commit author is a member of the team DD2480-Group26 by checking
+     * the email.
+     * 
+     * @param email email of the commit author
+     * @return if the email is in the recipients
+     */
+    public boolean isAuthorizedAuthor(String email) {
+        if (Arrays.asList(this.recipients).contains(email)) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Get the parameters in pushStatus to a String
@@ -43,17 +58,16 @@ public class Email {
     }
 
     /**
-     * send an email to all recipients.
+     * send an email to given recipients.
      * 
-     * @param PushStatus has parameters about the compile and test result of the
-     *                   pushed code. Used to get the content of the email
+     * @param content the content of the email
      * @return boolean, if the email was successfully sent
      */
-    public boolean send(PushStatus pushStatus) {
+    public boolean send(String content, String[] recipients) {
         try {
             initEmail();
             authenticateSender();
-            createMessage(getContent(pushStatus));
+            createMessage(content, recipients);
             System.out.println("Email sent");
             return true;
         } catch (Exception e) {
@@ -61,6 +75,39 @@ public class Email {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * send an email to given recipient.
+     * 
+     * @param content the content of the email
+     * @return boolean, if the email was successfully sent
+     */
+    public boolean send(String content, String recipient) {
+        String[] recipArray = {recipient};
+        return send(content, recipArray);
+    }
+
+    /**
+     * send an email with the CI result to all default recipients.
+     * 
+     * @param PushStatus has parameters about the compile and test result of the
+     *                   pushed code. Used to get the content of the email
+     * @return boolean, if the email was successfully sent
+     */
+    public boolean send(PushStatus pushStatus) {
+        return send(getContent(pushStatus), this.recipients);
+    }
+
+    /**
+     * send an email with the CI result to given recipient.
+     * 
+     * @param PushStatus has parameters about the compile and test result of the
+     *                   pushed code. Used to get the content of the email
+     * @return boolean, if the email was successfully sent
+     */
+    public boolean send(PushStatus pushStatus, String recipient) {
+        return send(getContent(pushStatus), recipient);
     }
 
     /**
@@ -94,7 +141,7 @@ public class Email {
      * @throws AddressException
      * @throws MessagingException
      */
-    private void createMessage(String content) throws AddressException, MessagingException {
+    private void createMessage(String content, String[] recipients) throws AddressException, MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(sender));
         message.addRecipients(Message.RecipientType.TO, stringToAddress(recipients));
@@ -122,10 +169,10 @@ public class Email {
     /**
      * change the recipients
      * 
-     * @param recip addresses it changes to
+     * @param recipients addresses it changes to
      */
-    public void changeRecipients(String[] recip) {
-        recipients = recip;
+    public void changeRecipients(String[] recipients) {
+        this.recipients = recipients;
     }
 
     /**
@@ -134,6 +181,6 @@ public class Email {
      * @return recipients
      */
     public String[] getRecipients() {
-        return recipients;
+        return this.recipients;
     }
 }
