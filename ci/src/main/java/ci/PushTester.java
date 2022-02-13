@@ -20,7 +20,7 @@ public class PushTester  {
      * @return void
      */
 
-    public PushStatus getPushStatus(File dir, String commitID, String commitDate){
+    public PushStatus createPushStatus(File dir, String commitID, String commitDate){
         compileSuccess = true;
         testSuccess = true;
         compileMessage = "";

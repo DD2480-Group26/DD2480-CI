@@ -61,7 +61,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 if (emailObj.isAuthorizedAuthor(email)) {
                     // compile and test the code if the commit author is authorized
                     PushTester pt = new PushTester();
-                    PushStatus pushStatus = pt.getPushStatus(localDirectory, id, timestamp);
+                    PushStatus pushStatus = pt.createPushStatus(localDirectory, id, timestamp);
 
                     // notify the author about the CI result
                     emailObj.send(pushStatus, email);
