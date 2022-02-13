@@ -19,12 +19,11 @@ public class PushTester  {
      * @param Local folder
      * @return void
      */
-    public PushStatus getPushStatus(File dir){
+    public PushStatus getPushStatus(File dir, String commitID){
         compileSuccess = true;
         testSuccess = true;
         compileMessage = "";
         testMessage = "";
-        String commitID = "5";
         fileExecuter(dir);
 
         PushStatus pushStatus = new PushStatus( commitID,  compileSuccess,  testSuccess,  compileMessage,  testMessage);
