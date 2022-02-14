@@ -43,7 +43,7 @@ public class Email {
      *                   pushed code
      * @return email String
      */
-    public String getContent(PushStatus pushStatus) {
+    public static String getContent(PushStatus pushStatus) {
         String compileSuccessTxt = pushStatus.getCompileSuccess() ? "Success" : "Fail";
         String testSuccessTxt = pushStatus.getTestSuccess() ? "Success" : "Fail";
         String content = String.format("Status for commit %s:\n \tCompile: %s\n\tTest: %s ", pushStatus.getCommitID(),
