@@ -19,6 +19,7 @@ import java.io.InputStream;
 import org.json.*;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,6 +132,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                         // compile and test the code if the commit author is authorized
                         PushTester pt = new PushTester();
                         PushStatus pushStatus = pt.createPushStatus(localDirectory, id, timestamp);
+                        generateBuildLog(pushStatus);
     
                         // notify the author about the CI result
                         emailObj.send(pushStatus, email);
@@ -157,6 +159,28 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
+        }
+    }
+
+    public void generateBuildLog(PushStatus ps) {
+        try {
+            // create new log file
+            System.out.println("Generating log file");
+            String date = ps.getCommitDate();
+            date = date.substring(0, 19);
+            date = date.replace(':', '-');
+            date = date.replace(' ', 'T');
+            String buildLogName = date + ".txt";
+            FileWriter logWriter = new FileWriter("../buildHistory/" + buildLogName);
+    
+            // write the log information to file
+            logWriter.write("Build date: " + ps.getCommitDate() + "\n");
+            logWriter.write(Email.getContent(ps));
+            
+            logWriter.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

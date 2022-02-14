@@ -19,7 +19,8 @@ public class Email {
     private final String pwd = "pas123&pas";
     private String[] recipients = { "elisabeth.chen010@gmail.com",
             "carl.engelhardt@gmail.com",
-            "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org"
+            "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org", 
+            "45691809+cadye@users.noreply.github.com"
     };
 
     /**
