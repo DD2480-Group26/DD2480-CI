@@ -17,6 +17,7 @@ public class Email {
     private Session session;
     private final String sender = "group26CI@gmail.com";
     private final String pwd = "pas123&pas";
+
     private String[] recipients = { "elisabeth.chen010@gmail.com", "carl.engelhardt@gmail.com", 
                                    "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org", 
                                    "89870851+Lantern004@users.noreply.github.com", 
