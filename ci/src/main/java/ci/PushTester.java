@@ -38,7 +38,7 @@ public class PushTester  {
      * @param Local folder
      * @return void
      */
-    public void fileExecuter(File dir){
+    private void fileExecuter(File dir){
 
         try {
             String path = dir.toString();
@@ -53,7 +53,7 @@ public class PushTester  {
 
             while ((line = reader.readLine()) != null)
             {
-                if(line.contains("BUILD FAILED")){
+                if(line.contains("compileJava FAILED")){
                     compileSuccess =false;
                     testSuccess=false;
                     testMessage="Tests not run because compile failed.";
