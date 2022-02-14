@@ -19,12 +19,16 @@ Victor: JGit library, git connection, clone… , and unit test for the pull/chec
 
 Julia: Implement a handler for incoming http requests to our server. Checking and parsing payload. Test compilation status for committed code.
 
-Carl: Gradle.
+Carl: Gradle, build history (P7).
 
 Hemen: Implement the function for test code on commit.
 
+### Build history (P7)
+* Links to each build can be found by going to `/builds`, e.g. http://localhost:8080/builds. 
+* An individual build can be accessed by going to `/builds/\<dateofbuild\>.txt`, e.g. http://localhost:8080/builds/2022-02-14T18-00-04.txt.
+
 ### Remarkable contribution (P8)
-We plan to check that the author of the commit is a member of our project.
+We check that the author of the commit is a member of our project, thus a non-member's commit would not activate the CI server.
 
 # Implementation and tests
 ### Compilation
