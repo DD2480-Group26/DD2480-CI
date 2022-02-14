@@ -162,6 +162,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         }
     }
 
+    /**
+     * Generates a log file in the buildHistory directory.
+     * @param ps PushStatus object, to get information about build
+     */
     public void generateBuildLog(PushStatus ps) {
         try {
             // create new log file
