@@ -119,23 +119,38 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     JSONObject headCommit = (JSONObject) payload.get("head_commit");
                     JSONObject author = (JSONObject) headCommit.get("author");
                     
+                    
                     String branchName = (String) payload.get("ref");
                     branchName = branchName.replaceAll("refs/heads/", "");
                     String id = (String) headCommit.get("id");
+                    String timestamp = (String) headCommit.get("timestamp");
                     String email = (String) author.get("email");
                     
+                    
+    
+                    // here you do all the continuous integration tasks
+                    // for example
                     // 1st clone your repository
                     PushTester pushTester = new PushTester();
+    
                     File localDirectory = new File("GitPull/");
     
                     Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                     GitConnector.gitPull(localDirectory, branchName);
                     GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
     
-                    PushTester pt = new PushTester();
-                    PushStatus pushStatus = pt.getPushStatus(localDirectory);
-    
                     // 2nd compile the code
+                    PushTester pt = new PushTester();
+                    PushStatus pushStatus = pt.getPushStatus(localDirectory, id, timestamp);
+    
+                    // notify the author
+                    Email emailObj = new Email();
+                    if (emailObj.isAuthorizedAuthor(email)) {
+                        emailObj.send(pushStatus, email);
+                    } else {
+                        emailObj.send("You are not authorized to push to this project", email);
+                    }    
+    
                     pushTester.fileExecuter(localDirectory);
     
                     response.getWriter().println("CI job Done");
