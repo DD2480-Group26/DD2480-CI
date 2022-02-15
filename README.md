@@ -8,8 +8,9 @@ This CI server will parse a commit by cloning the repository, compiling the code
 * To build (compile and test), use `./gradlew build`.
 
 ### Project structure
-The main classes are located in [`ci/src/main/java`](ci/src/main/ja).
-The test classes are located in [`ci/src/test/java`](ci/src/test/ja)
+The project uses the standard Gradle application structure.
+* The implementation code is located in [`ci/src/main/java`](ci/src/main/java).
+* The tests are located in [`ci/src/test/java`](ci/src/test/java).
 
 # Statement of contributions
 ### Individual
