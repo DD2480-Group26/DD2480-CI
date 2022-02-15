@@ -60,7 +60,7 @@ public class PushTester  {
                 }
                 if(line.contains("Test") && line.contains("FAILED")){
                     testSuccess=false;
-                    testMessage=testMessage + "\n Failedtest: " + testMessage;
+                    testMessage=testMessage + "\n Failedtest: " + line;
                 }
 
                 stringBuilder.append(line);
