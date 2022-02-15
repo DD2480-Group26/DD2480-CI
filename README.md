@@ -24,8 +24,8 @@ Carl: Gradle, build history (P7).
 Hemen: Implement the function for test code on commit.
 
 ### Build history (P7)
-* Links to each build can be found by going to `/builds`, e.g. http://localhost:8080/builds. 
-* An individual build can be accessed by going to `/builds/\<dateofbuild\>.txt`, e.g. http://localhost:8080/builds/2022-02-14T18-00-04.txt.
+* Links to all build logs can be found by going to `/builds`, e.g. http://localhost:8080/builds. 
+* An individual build log can be accessed by going to `/builds/<dateofbuild>.txt`, e.g. http://localhost:8080/builds/2022-02-14T18-00-04.txt.
 
 Example logs:
 ```
