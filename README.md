@@ -1,7 +1,7 @@
 # Continuous Integration Server
 A continuous integration (CI) server is a server which continuously checks a certain repository, and creates notifications about pushes to the repository etc.
 
-This CI server will parse each commit by cloning the repository, compiling the code, running the code's tests, and then notify the relevant stakeholders about the state of each commit through email.
+This CI server will parse a commit by cloning the repository, compiling the code, running the code's tests, and then notify the commiter about the state of the commit through email.
 
 ### Run and build
 * The CI server can be run using the command `./gradlew run`, and will listen on port 8080. 
