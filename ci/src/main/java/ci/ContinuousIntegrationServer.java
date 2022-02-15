@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
  * If the author is not authorized (i.e. is not a member of the team
  * DD2480-Group26), the code will not be compiled and tested and the author will
  * receive an email about his/her push was unauthorized.
- * <p>
  * See README for how to set up the CI server.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
@@ -109,7 +108,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      *
      * @param ps PushStatus object, to get information about build
      */
-    public void generateBuildLog(PushStatus ps) {
+    private void generateBuildLog(PushStatus ps) {
         try {
             // create new log file
             System.out.println("Generating log file");
@@ -126,6 +125,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
             logWriter.close();
         } catch (Exception e) {
+            // Prints this throwable and its backtrace to the specified print stream.
             e.printStackTrace();
         }
     }
@@ -134,10 +134,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @param url         Requested URL
      * @param baseRequest A request instance is created for each HttpConnection accepted by the server
      * @param response    ServletResponse
-     * @return Boolean
+     * @return Boolean true if URL matches, otherwise false
      * @throws IOException general class of exceptions
      */
-    public boolean buildInUrl(String url, Request baseRequest, HttpServletResponse response) throws IOException {
+    private boolean buildInUrl(String url, Request baseRequest, HttpServletResponse response) throws IOException {
 
         String subDirectory = "";
         boolean singleBuild = false;
@@ -175,9 +175,20 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
             return true;
-        }
-        // show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
-        else if (singleBuild) {
+        } else return isSingleBuild(url, baseRequest, response, singleBuild);
+    }
+
+    /**
+     * show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
+     *
+     * @param url         Requested URL
+     * @param baseRequest A request instance is created for each HttpConnection accepted by the server
+     * @param response    ServletResponse
+     * @param singleBuild boolean value for URL matches regex of singleBuildPattern
+     * @return Boolean true if successfully find a build, otherwise false
+     */
+    private boolean isSingleBuild(String url, Request baseRequest, HttpServletResponse response, boolean singleBuild) throws IOException {
+        if (singleBuild) {
             StringBuilder output = new StringBuilder();
 
             // get the name of the build from the URL
