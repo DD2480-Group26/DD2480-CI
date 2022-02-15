@@ -104,7 +104,7 @@ public class Email {
     /**
      * send an email with the CI result to given recipient.
      * 
-     * @param PushStatus has parameters about the compile and test result of the
+     * @param pushStatus has parameters about the compile and test result of the
      *                   pushed code. Used to get the content of the email
      * @return boolean, if the email was successfully sent
      */
