@@ -2,7 +2,6 @@ package ci;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +12,6 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jgit.api.Git;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
 
 import org.json.*;
 
@@ -29,7 +26,7 @@ import java.util.regex.Pattern;
  * If the author is not authorized (i.e. is not a member of the team
  * DD2480-Group26), the code will not be compiled and tested and the author will
  * receive an email about his/her push was unauthorized.
- * 
+ * <p>
  * See README for how to set up the CI server.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
@@ -37,10 +34,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     static int port = 8080;
 
     public void handle(String target,
-            Request baseRequest,
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException, ServletException {
+                       Request baseRequest,
+                       HttpServletRequest request,
+                       HttpServletResponse response)
+            throws IOException {
 
         String url = request.getRequestURL().toString();
 
@@ -56,7 +53,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             // true if URL matches regex of singleBuildPattern
             singleBuild = matcher.find();
         }
-        
+
         // show list of all stored builds if URL is http(s)://<host>/builds
         if (subDirectory.equals("/builds")) {
             response.setContentType("text/html");
@@ -65,23 +62,24 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             File dir = new File("../buildHistory");
             String[] buildFileNames = dir.list();
             // start of simple html file
-            String output = "<!DOCTYPE html>\n<html>\n<body>\n<h1>Build list</h1>";
-            
+            StringBuilder output = new StringBuilder("<!DOCTYPE html>\n<html>\n<body>\n<h1>Build list</h1>");
+
             // iterate through each build
+            assert buildFileNames != null;
             for (String build : buildFileNames) {
                 String buildURL = url + "/" + build;
                 // add link to the build in the html
-                output += "<a href=\"" + buildURL + "\">" + build + "</a> <br>";
+                output.append("<a href=\"").append(buildURL).append("\">").append(build).append("</a> <br>");
             }
 
-            output += "</body>\n</html>"; // end of simple html file
+            output.append("</body>\n</html>"); // end of simple html file
             response.getWriter().print(output);
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
         }
         // show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
         else if (singleBuild) {
-            String output = "";
+            StringBuilder output = new StringBuilder();
 
             // get the name of the build from the URL
             int indexOfBuilds = url.indexOf("builds/");
@@ -92,19 +90,17 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 BufferedReader br = new BufferedReader(new FileReader(build));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    output += line + "\n";
+                    output.append(line).append("\n");
                 }
                 br.close();
-            }
-            catch (Exception e) {
-                output += "error: no such build exists";
+            } catch (Exception e) {
+                output.append("error: no such build exists");
             }
 
             response.getWriter().print(output);
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
-        }
-        else {
+        } else {
             String githubEvent = request.getHeader("X-Github-Event");
             System.out.println(githubEvent);
             switch (githubEvent) {
@@ -113,19 +109,19 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     JSONObject payload = new JSONObject(request.getParameter("payload"));
                     JSONObject headCommit = (JSONObject) payload.get("head_commit");
                     JSONObject author = (JSONObject) headCommit.get("author");
-    
+
                     String branchName = (String) payload.get("ref");
                     branchName = branchName.replaceAll("refs/heads/", "");
                     String id = (String) headCommit.get("id");
                     String timestamp = (String) headCommit.get("timestamp");
                     String email = (String) author.get("email");
-    
+
                     // clone repository
                     File localDirectory = new File("GitPull/");
                     Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                     GitConnector.gitPull(localDirectory, branchName);
                     GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
-    
+
                     // create email object that handel notification
                     Email emailObj = new Email();
                     if (emailObj.isAuthorizedAuthor(email)) {
@@ -133,17 +129,18 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                         PushTester pt = new PushTester();
                         PushStatus pushStatus = pt.createPushStatus(localDirectory, id, timestamp);
                         generateBuildLog(pushStatus);
-    
+
                         // notify the author about the CI result
                         emailObj.send(pushStatus, email);
                     } else {
                         // notify the unauthorized author
                         emailObj.send("You are not authorized to push to this project", email);
                     }
-    
+
                     response.getWriter().println("CI job Done");
-    
+
                     // Delete the directory
+                    assert git != null;
                     git.getRepository().close();
                     GitConnector.deleteDirectory(localDirectory);
                     localDirectory.delete();
@@ -164,6 +161,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
     /**
      * Generates a log file in the buildHistory directory.
+     *
      * @param ps PushStatus object, to get information about build
      */
     public void generateBuildLog(PushStatus ps) {
@@ -176,54 +174,15 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             date = date.replace(' ', 'T');
             String buildLogName = date + ".txt";
             FileWriter logWriter = new FileWriter("../buildHistory/" + buildLogName);
-    
+
             // write the log information to file
             logWriter.write("Build date: " + ps.getCommitDate() + "\n");
             logWriter.write(Email.getContent(ps));
-            
+
             logWriter.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Parse request data and create a string containing the payload.
-     *
-     * @param request A HttpServletRequest recieved by handler.
-     * @return String Payload of the request.
-     */
-    public String getRequestPayload(HttpServletRequest request) {
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = null;
-
-        try {
-            InputStream inputStream = request.getInputStream();
-            if (inputStream != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
-                int bytesRead = -1;
-                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-                    // Append charvuffer to String builder with given offsets.
-                    stringBuilder.append(charBuffer, 0, bytesRead);
-                }
-            } else {
-                stringBuilder.append("");
-            }
-        } catch (IOException ex) {
-            System.out.println("Error when parsing payload");
-        } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
-
-        return stringBuilder.toString();
-
     }
 
     // used to start the CI server in command line
