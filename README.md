@@ -27,6 +27,23 @@ Hemen: Implement the function for test code on commit.
 * Links to each build can be found by going to `/builds`, e.g. http://localhost:8080/builds. 
 * An individual build can be accessed by going to `/builds/\<dateofbuild\>.txt`, e.g. http://localhost:8080/builds/2022-02-14T18-00-04.txt.
 
+Example logs:
+```
+Build date: 2022-02-14 18:00:04 +01:00
+Status for commit e537f113bbcc2ba3a82d7a71719ebe9ebb1f9e38:
+ 	Compile: Success
+	Test: Success 
+```
+```
+Build date: 2022-02-15 18:57:16 +01:00
+Status for commit 1ac065ee44203ce565f424b839cf3cfd51043778:
+ 	Compile: Success
+	Test: Fail 
+
+Error message for test:
+	
+ Failedtest: EmailTest > TestSendStringOneRecipientSuccess FAILED
+```
 ### Remarkable contribution (P8)
 We check that the author of the commit is a member of our project, thus a non-member's commit would not activate the CI server.
 
