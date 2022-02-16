@@ -29,7 +29,7 @@ public class GitConnector {
     /**
      * Clone a remote Git repo in a selected folder
      *
-     * @param RemotePath Https link to Git Repository
+     * @param remotePath Https link to Git Repository
      * @param localPath Local folder
      * @return Git object
      */
