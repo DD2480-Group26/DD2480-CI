@@ -1,8 +1,8 @@
 package ci;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jgit.api.Git;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
+
 
 import org.json.*;
 
@@ -29,10 +28,12 @@ import java.util.regex.Pattern;
  * If the author is not authorized (i.e. is not a member of the team
  * DD2480-Group26), the code will not be compiled and tested and the author will
  * receive an email about his/her push was unauthorized.
- * 
  * See README for how to set up the CI server.
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
+
+    public ContinuousIntegrationServer() {
+    }
 
     static int port = 8080;
 
@@ -46,74 +47,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @throws ServletException
      */
     public void handle(String target,
-            Request baseRequest,
-            HttpServletRequest request,
-            HttpServletResponse response)
+                       Request baseRequest,
+                       HttpServletRequest request,
+                       HttpServletResponse response)
             throws IOException, ServletException {
 
-        String url = request.getRequestURL().toString();
-
-        String subDirectory = "";
-        boolean singleBuild = false;
-        int ifSubDirectoryURL = url.indexOf('/', 8);
-        // true if URL matches http(s)://<host>/*, false if matches http(s)://<host>
-        if (ifSubDirectoryURL != -1) {
-            subDirectory = url.substring(ifSubDirectoryURL, url.length());
-            // use regex to see if any specific build is accessed
-            Pattern singleBuildPattern = Pattern.compile("/builds/.");
-            Matcher matcher = singleBuildPattern.matcher(subDirectory);
-            // true if URL matches regex of singleBuildPattern
-            singleBuild = matcher.find();
-        }
-        
-        // show list of all stored builds if URL is http(s)://<host>/builds
-        if (subDirectory.equals("/builds")) {
-            response.setContentType("text/html");
-
-            // get all build filenames in buildHistory directory
-            File dir = new File("../buildHistory");
-            String[] buildFileNames = dir.list();
-            // start of simple html file
-            String output = "<!DOCTYPE html>\n<html>\n<body>\n<h1>Build list</h1>";
-            
-            // iterate through each build
-            for (String build : buildFileNames) {
-                String buildURL = url + "/" + build;
-                // add link to the build in the html
-                output += "<a href=\"" + buildURL + "\">" + build + "</a> <br>";
-            }
-
-            output += "</body>\n</html>"; // end of simple html file
-            response.getWriter().print(output);
-            response.setStatus(HttpServletResponse.SC_OK);
-            baseRequest.setHandled(true);
-        }
-        // show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
-        else if (singleBuild) {
-            String output = "";
-
-            // get the name of the build from the URL
-            int indexOfBuilds = url.indexOf("builds/");
-            String buildName = url.substring(indexOfBuilds + 7, url.length());
-
-            try {
-                File build = new File("../buildHistory/" + buildName);
-                BufferedReader br = new BufferedReader(new FileReader(build));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    output += line + "\n";
-                }
-                br.close();
-            }
-            catch (Exception e) {
-                output += "error: no such build exists";
-            }
-
-            response.getWriter().print(output);
-            response.setStatus(HttpServletResponse.SC_OK);
-            baseRequest.setHandled(true);
-        }
-        else {
+        if (!buildInUrl(request.getRequestURL().toString(), baseRequest, response)) {
             String githubEvent = request.getHeader("X-Github-Event");
             System.out.println(githubEvent);
             switch (githubEvent) {
@@ -122,19 +61,19 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     JSONObject payload = new JSONObject(request.getParameter("payload"));
                     JSONObject headCommit = (JSONObject) payload.get("head_commit");
                     JSONObject author = (JSONObject) headCommit.get("author");
-    
+
                     String branchName = (String) payload.get("ref");
                     branchName = branchName.replaceAll("refs/heads/", "");
                     String id = (String) headCommit.get("id");
                     String timestamp = (String) headCommit.get("timestamp");
                     String email = (String) author.get("email");
-    
+
                     // clone repository
                     File localDirectory = new File("GitPull/");
                     Git git = GitConnector.cloneRepo("https://github.com/DD2480-Group26/DD2480-CI.git", localDirectory);
                     GitConnector.gitPull(localDirectory, branchName);
                     GitConnector.checkoutToBranch(localDirectory, "origin/" + branchName);
-    
+
                     // create email object that handel notification
                     Email emailObj = new Email();
                     if (emailObj.isAuthorizedAuthor(email)) {
@@ -142,18 +81,20 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                         PushTester pt = new PushTester();
                         PushStatus pushStatus = pt.createPushStatus(localDirectory, id, timestamp);
                         generateBuildLog(pushStatus);
-    
+
                         // notify the author about the CI result
                         emailObj.send(pushStatus, email);
                     } else {
                         // notify the unauthorized author
                         emailObj.send("You are not authorized to push to this project", email);
                     }
-    
+
                     response.getWriter().println("CI job Done");
-    
+
                     // Delete the directory
-                    git.getRepository().close();
+                    if (git != null) {
+                        git.getRepository().close();
+                    }
                     GitConnector.deleteDirectory(localDirectory);
                     localDirectory.delete();
                     break;
@@ -169,13 +110,16 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
         }
+
+
     }
 
     /**
      * Generates a log file in the buildHistory directory.
+     *
      * @param ps PushStatus object, to get information about build
      */
-    public void generateBuildLog(PushStatus ps) {
+    private void generateBuildLog(PushStatus ps) {
         try {
             // create new log file
             System.out.println("Generating log file");
@@ -185,57 +129,112 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             date = date.replace(' ', 'T');
             String buildLogName = date + ".txt";
             FileWriter logWriter = new FileWriter("../buildHistory/" + buildLogName);
-    
+
             // write the log information to file
             logWriter.write("Build date: " + ps.getCommitDate() + "\n");
             logWriter.write(Email.getContent(ps));
-            
+
             logWriter.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            // Prints this throwable and its backtrace to the specified print stream.
             e.printStackTrace();
         }
     }
 
     /**
-     * Parse request data and create a string containing the payload.
+     *  checks if the incoming request is about build.
+     *  If it is about build, then it saves the build log in the folder "buildHistory"
      *
-     * @param request A HttpServletRequest recieved by handler.
-     * @return String Payload of the request.
+     * @param url         Requested URL
+     * @param baseRequest A request instance is created for each HttpConnection accepted by the server
+     * @param response    ServletResponse
+     * @return Boolean true if URL matches, otherwise false
+     * @throws IOException general class of exceptions
      */
-    public String getRequestPayload(HttpServletRequest request) {
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = null;
 
-        try {
-            InputStream inputStream = request.getInputStream();
-            if (inputStream != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
-                int bytesRead = -1;
-                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-                    // Append charvuffer to String builder with given offsets.
-                    stringBuilder.append(charBuffer, 0, bytesRead);
-                }
-            } else {
-                stringBuilder.append("");
-            }
-        } catch (IOException ex) {
-            System.out.println("Error when parsing payload");
-        } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+    private boolean buildInUrl(String url, Request baseRequest, HttpServletResponse response) throws IOException, NullPointerException {
 
+        String subDirectory = "";
+        boolean singleBuild = false;
+        int ifSubDirectoryURL = url.indexOf('/', 8);
+        // true if URL matches http(s)://<host>/*, false if matches http(s)://<host>
+        if (ifSubDirectoryURL != -1) {
+            subDirectory = url.substring(ifSubDirectoryURL);
+            // use regex to see if any specific build is accessed
+            Pattern singleBuildPattern = Pattern.compile("/builds/.");
+            Matcher matcher = singleBuildPattern.matcher(subDirectory);
+            // true if URL matches regex of singleBuildPattern
+            singleBuild = matcher.find();
         }
 
-        return stringBuilder.toString();
+        // show list of all stored builds if URL is http(s)://<host>/builds
+        if (subDirectory.equals("/builds")) {
+            response.setContentType("text/html");
 
+            // get all build filenames in buildHistory directory
+            File dir = new File("../buildHistory");
+            String[] buildFileNames = dir.list();
+            // start of simple html file
+            StringBuilder output = new StringBuilder("<!DOCTYPE html>\n<html>\n<body>\n<h1>Build list</h1>");
+
+            // iterate through each build
+            if (buildFileNames != null) {
+                for (String build : buildFileNames) {
+                    String buildURL = url + "/" + build;
+                    // add link to the build in the html
+                    output.append("<a href=\"").append(buildURL).append("\">").append(build).append("</a> <br>");
+                }
+            }
+
+            output.append("</body>\n</html>"); // end of simple html file
+            response.getWriter().print(output);
+            response.setStatus(HttpServletResponse.SC_OK);
+            baseRequest.setHandled(true);
+            return true;
+        } else return isSingleBuild(url, baseRequest, response, singleBuild);
     }
 
-    // used to start the CI server in command line
+    /**
+     * show single build information if URL is http(s)://<host>/builds/<singleBuildFileName>
+     *
+     * @param url         Requested URL
+     * @param baseRequest A request instance is created for each HttpConnection accepted by the server
+     * @param response    ServletResponse
+     * @param singleBuild boolean value for URL matches regex of singleBuildPattern
+     * @return Boolean true if successfully find a build, otherwise false
+     */
+    private boolean isSingleBuild(String url, Request baseRequest, HttpServletResponse response, boolean singleBuild) throws IOException {
+        if (singleBuild) {
+            StringBuilder output = new StringBuilder();
+
+            // get the name of the build from the URL
+            int indexOfBuilds = url.indexOf("builds/");
+            String buildName = url.substring(indexOfBuilds + 7, url.length());
+
+            try {
+                File build = new File("../buildHistory/" + buildName);
+                BufferedReader br = new BufferedReader(new FileReader(build));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    output.append(line).append("\n");
+                }
+                br.close();
+            } catch (Exception e) {
+                output.append("error: no such build exists");
+            }
+
+            response.getWriter().print(output);
+            response.setStatus(HttpServletResponse.SC_OK);
+            baseRequest.setHandled(true);
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * used to start the CI server in command line
+     */
     public static void main(String[] args) throws Exception {
         Server server = new Server(port);
         server.setHandler(new ContinuousIntegrationServer());
