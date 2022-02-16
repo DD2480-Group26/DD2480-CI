@@ -17,11 +17,11 @@ public class Email {
     private Session session;
     private final String sender = "group26CI@gmail.com";
     private final String pwd = "pas123&pas";
-
-    private String[] recipients = { "elisabeth.chen010@gmail.com", "carl.engelhardt@gmail.com", 
-                                   "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org", 
-                                   "89870851+Lantern004@users.noreply.github.com", 
-                                   "98450166+YaourtNature83@users.noreply.github.com", "45691809+cadye@users.noreply.github.com" 
+    private String[] recipients = { "elisabeth.chen010@gmail.com",
+            "carl.engelhardt@gmail.com",
+            "juliavasastan@gmail.com", "hemena@kth.se", "victor.massy@grenoble-inp.org",
+            "89870851+Lantern004@users.noreply.github.com",
+            "98450166+YaourtNature83@users.noreply.github.com", "45691809+cadye@users.noreply.github.com",
     };
 
     /**
@@ -62,7 +62,8 @@ public class Email {
     /**
      * send an email to given recipients.
      * 
-     * @param content the content of the email
+     * @param content    the content of the email
+     * @param recipients email addresses for the recipients
      * @return boolean, if the email was successfully sent
      */
     public boolean send(String content, String[] recipients) {
@@ -82,11 +83,12 @@ public class Email {
     /**
      * send an email to given recipient.
      * 
-     * @param content the content of the email
+     * @param content   the content of the email
+     * @param recipient email address for the recipient
      * @return boolean, if the email was successfully sent
      */
     public boolean send(String content, String recipient) {
-        String[] recipArray = {recipient};
+        String[] recipArray = { recipient };
         return send(content, recipArray);
     }
 
@@ -104,8 +106,9 @@ public class Email {
     /**
      * send an email with the CI result to given recipient.
      * 
-     * @param PushStatus has parameters about the compile and test result of the
+     * @param pushStatus has parameters about the compile and test result of the
      *                   pushed code. Used to get the content of the email
+     * @param recipient  email address for the recipient
      * @return boolean, if the email was successfully sent
      */
     public boolean send(PushStatus pushStatus, String recipient) {
@@ -140,6 +143,7 @@ public class Email {
      * create the massage
      * 
      * @param content the content of the message
+     * @param recipients email addresses for the recipients
      * @throws AddressException
      * @throws MessagingException
      */
