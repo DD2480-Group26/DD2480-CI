@@ -33,6 +33,8 @@ Error message for test:
 	
  Failedtest: EmailTest > TestSendStringOneRecipientSuccess FAILED
 ```
+### Javadoc
+Javadoc for the project can be generated using the command `./gradlew javadoc`. The javadoc files can then be found in the `ci/build/docs/javadoc` directory.
 
 # Statement of contributions
 ### Individual
