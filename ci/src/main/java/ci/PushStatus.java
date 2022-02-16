@@ -49,26 +49,50 @@ public class PushStatus {
 
     }
 
+    /**
+     * return compileSuccess
+     * @return compileSuccess
+     */
     public Boolean getCompileSuccess() {
         return this.compileSuccess;
     }
 
+    /**
+     * return testSuccess
+     * @return testSuccess
+     */
     public Boolean getTestSuccess() {
         return this.testSuccess;
     }
 
+    /**
+     * return compileMessage
+     * @return compileMessage
+     */
     public String getCompileMessage() {
         return this.compileMessage;
     }
 
+    /**
+     * return testMessage
+     * @return testMessage
+     */
     public String getTestMessage() {
         return this.testMessage;
     }
 
+    /**
+     * return commitID
+     * @return commitID
+     */
     public String getCommitID() {
         return this.commitID;
     }
 
+    /**
+     * return commitDate
+     * @return commitDate
+     */
     public String getCommitDate() {
         return this.commitDate;
     }

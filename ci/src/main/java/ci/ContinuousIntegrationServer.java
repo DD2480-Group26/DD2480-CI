@@ -38,7 +38,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     static int port = 8080;
 
     /**
-     * Handle all CI functions, including compile, tests and notification.
+     * Handle all CI functions, including compile, tests and notification. 
      * @param target the target in string
      * @param baseRequest the base request
      * @param request A HttpServletRequest recieved by handler.

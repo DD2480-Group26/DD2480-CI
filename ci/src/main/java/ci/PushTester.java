@@ -2,11 +2,13 @@ package ci;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.lang.ProcessBuilder;
 import java.io.File;
-import java.io.IOException;
 
+/*
+* Takes a directory containing code of an github commit and the id and date of the commit. Then the
+* code in the directory is built and tested using gradle. Depending on the output a PushStatus
+* objects is created and returned.
+ */
 public class PushTester  {
     private Boolean compileSuccess = true;
     private Boolean testSuccess = true;
@@ -14,12 +16,13 @@ public class PushTester  {
     private String testMessage = "";
 
     /**
-     * Sets the Push status variables
+     * Executes the testing of an github repository and create a Push status object containing the result.
      *
-     * @param Local folder
-     * @return void
+     * @param dir File  A file object for the github repository.
+     * @param commitID String   The id of the commit containing the github repository.
+     * @param commitDate String     The data of the commit.
+     * @return PushStatus object containing the results of the test.
      */
-
     public PushStatus createPushStatus(File dir, String commitID, String commitDate){
         compileSuccess = true;
         testSuccess = true;
@@ -33,9 +36,9 @@ public class PushTester  {
 
 
     /**
-     * Build the directory inputed using gradle
+     * Build and test the directory inputed using gradle. Sets the class variables depending on the result.
      *
-     * @param Local folder
+     * @param dir File  A file object for the github repository.
      * @return void
      */
     private void fileExecuter(File dir){
@@ -60,7 +63,7 @@ public class PushTester  {
                 }
                 if(line.contains("Test") && line.contains("FAILED")){
                     testSuccess=false;
-                    testMessage=testMessage + "\n Failedtest: " + testMessage;
+                    testMessage=testMessage + "\n Failedtest: " + line;
                 }
 
                 stringBuilder.append(line);

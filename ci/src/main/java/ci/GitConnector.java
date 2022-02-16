@@ -6,14 +6,13 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
-import org.eclipse.jgit.merge.MergeStrategy;
 
 public class GitConnector {
 
     /**
      * Recursively delete a folder and all the files contained
      *
-     * @param Folder name
+     * @param file Folder name
      */
     public static void deleteDirectory(File file) {
         for (File subfile : file.listFiles()) {
@@ -29,8 +28,8 @@ public class GitConnector {
     /**
      * Clone a remote Git repo in a selected folder
      *
-     * @param Https link to Git Repo
-     * @param Local folder
+     * @param remotePath Https link to Git Repository
+     * @param localPath Local folder
      * @return Git object
      */
     public static Git cloneRepo(String remotePath, File localPath) {
@@ -52,8 +51,8 @@ public class GitConnector {
     /**
      * Pull a git repo
      *
-     * @param Local folder
-     * @param Name  of the branch to pull
+     * @param localRepoPath Local folder
+     * @param branch Name of the branch to pull
      * @return True if the pull succeeded
      */
     public static boolean gitPull(File localRepoPath, String branch) {
@@ -77,8 +76,8 @@ public class GitConnector {
     /**
      * Checkout from main to the selected branch
      *
-     * @param Local folder
-     * @param Name  of the branch to pull
+     * @param repositoryLocalPath Local folder
+     * @param branchName Name  of the branch to pull
      * @return True if the checkout succeeded
      */
     public static boolean checkoutToBranch(File repositoryLocalPath, String branchName) {
