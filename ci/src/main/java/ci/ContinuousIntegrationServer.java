@@ -1,5 +1,6 @@
 package ci;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,7 +41,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                        Request baseRequest,
                        HttpServletRequest request,
                        HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
 
         if (!buildInUrl(request.getRequestURL().toString(), baseRequest, response)) {
             String githubEvent = request.getHeader("X-Github-Event");
@@ -82,8 +83,9 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                     response.getWriter().println("CI job Done");
 
                     // Delete the directory
-                    assert git != null;
-                    git.getRepository().close();
+                    if (git != null) {
+                        git.getRepository().close();
+                    }
                     GitConnector.deleteDirectory(localDirectory);
                     localDirectory.delete();
                     break;
@@ -131,13 +133,17 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     }
 
     /**
+     *  checks if the incoming request is about build.
+     *  If it is about build, then it saves the build log in the folder "buildHistory"
+     *
      * @param url         Requested URL
      * @param baseRequest A request instance is created for each HttpConnection accepted by the server
      * @param response    ServletResponse
      * @return Boolean true if URL matches, otherwise false
      * @throws IOException general class of exceptions
      */
-    private boolean buildInUrl(String url, Request baseRequest, HttpServletResponse response) throws IOException {
+
+    private boolean buildInUrl(String url, Request baseRequest, HttpServletResponse response) throws IOException, NullPointerException {
 
         String subDirectory = "";
         boolean singleBuild = false;
@@ -163,11 +169,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             StringBuilder output = new StringBuilder("<!DOCTYPE html>\n<html>\n<body>\n<h1>Build list</h1>");
 
             // iterate through each build
-            assert buildFileNames != null;
-            for (String build : buildFileNames) {
-                String buildURL = url + "/" + build;
-                // add link to the build in the html
-                output.append("<a href=\"").append(buildURL).append("\">").append(build).append("</a> <br>");
+            if (buildFileNames != null) {
+                for (String build : buildFileNames) {
+                    String buildURL = url + "/" + build;
+                    // add link to the build in the html
+                    output.append("<a href=\"").append(buildURL).append("\">").append(build).append("</a> <br>");
+                }
             }
 
             output.append("</body>\n</html>"); // end of simple html file
