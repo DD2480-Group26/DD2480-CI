@@ -44,7 +44,7 @@ Victor: JGit library, git connection, clone… , and unit test for the pull/chec
 
 Julia: Implement a handler for incoming http requests to our server. Checking and parsing payload. Test compilation status for committed code.
 
-Carl: Gradle, build history (P7).
+Carl: Gradle, build history (P7), README.
 
 Hemen: Implement the function for test code on commit.
 
